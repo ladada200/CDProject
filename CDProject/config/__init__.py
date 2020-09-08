@@ -13,15 +13,16 @@ config.read(("%s/local.cfg" % working_dir) if os.path.isfile('%s/local.cfg' % wo
 
 class Config(object):
     # Debug
-    DEBUG = config.get('DEBUG', 'DEBUG')
+    DEBUG = bool(config.get('DEBUG', 'DEBUG'))
     CSRF_ENABLED = True
+    ENV = 'development' if config.get('DEBUG', 'DEBUG') in ['True', 'TRUE', 'true'] else 'production'
 
     # Host
-    HOST_PORT=config.get('HOST', 'host_port')
-    HOST_HTTPS=config.get('HOST', 'host_https')
-    HOST_NAME=config.get('HOST', 'host_name')
-    HOST_FS=config.get('HOST', 'host_FS')
-    HOST_RDP_PORT=config.get('HOST', 'host_rdp_port')
+    HOST_PORT=config.get('HOST', 'HOST_PORT')
+    HOST_HTTPS=config.get('HOST', 'HOST_HTTPS')
+    HOST_NAME=config.get('HOST', 'HOST_NAME')
+    HOST_FS=config.get('HOST', 'HOST_FS')
+    HOST_RDP_PORT=config.get('HOST', 'HOST_RDP_PORT')
 
     # DB
     SQLALCHEMY_DATABASE_URI="postgresql:///%s:%s@%s:%s/%s" % (config.get('DB', 'db_username'),
@@ -43,7 +44,6 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-
 
 class TestingConfig(Config):
     TESTING = True
