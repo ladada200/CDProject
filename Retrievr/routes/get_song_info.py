@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, Blueprint, request, session, make_response
-from CDProject import CDProject
+from Retrievr import Retrievr
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 from base64 import b64encode
 
-@CDProject.route('/song/', methods=['GET'])
-@CDProject.route('/song/<song>', methods=['GET', 'POST'])
+@Retrievr.route('/song/', methods=['GET'])
+@Retrievr.route('/song/<song>', methods=['GET', 'POST'])
 def index(song=None):
     """Does something"""
 

@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 import configparser
 import codecs
 
-working_dir = "%s/CDProject/config" % os.getcwd()
+working_dir = "%s/Retrievr/config" % os.getcwd()
 config = configparser.ConfigParser(inline_comment_prefixes='#')
 config.read(("%s/local.cfg" % working_dir) if os.path.isfile('%s/local.cfg' % working_dir) else ("%s/template.cfg" % working_dir), encoding="utf-8")
 

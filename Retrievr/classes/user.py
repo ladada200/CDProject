@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from CDProject import db
+from Retrievr import db
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from datetime import datetime

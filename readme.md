@@ -2,7 +2,7 @@
 ### What is this project?
 Welcome to the CD Library Project; produced and created by Christopher Rupert.
 
-Checkout the wiki here! [https://github.com/ladada200/CDProject/wiki](https://github.com/ladada200/CDProject/wiki)
+Checkout the wiki here! [https://github.com/ladada200/Retrievr/wiki](https://github.com/ladada200/Retrievr/wiki)
 
 ### Version:
 1.0.0.20.9.4.a
@@ -28,7 +28,7 @@ DB_HOST=localhost                           # change if not localhost
 DB_PORT=5432                                # change if different
 DB_USERNAME=dbadmin                         # change if different
 DB_PASSWORD=pass                            # change if different
-DB_NAME=cdproject                           # name of database to use once connected to DB.
+DB_NAME=Retrievr                           # name of database to use once connected to DB.
 
 [SONG_FORMAT]
 SONG_STORE="AUDIO/{artist}/{album}/{song}"
@@ -37,7 +37,7 @@ SONG_RATING="{score} out of 5"
 SONG_TAGS="{tags}"
 
 [ADMIN]
-ADMIN_USER="administrator@cdproject.com"    # admin user
+ADMIN_USER="administrator@Retrievr.com"    # admin user
 ADMIN_PASS="changeme1234"                   # admin password
 
 [DEBUG]

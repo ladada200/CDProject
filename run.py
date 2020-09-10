@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from CDProject import CDProject
+from Retrievr import Retrievr
 
-# app.register_blueprint(CDProject.routes)
+# app.register_blueprint(Retrievr.routes)
 
 # db = SQLAlchemy(app)
 
 if __name__ == '__main__':
-    CDProject.run(host=CDProject.config['HOST_NAME'], port=CDProject.config['HOST_PORT'], debug=CDProject.config['DEBUG'])
+    Retrievr.run(host=Retrievr.config['HOST_NAME'], port=Retrievr.config['HOST_PORT'], debug=Retrievr.config['DEBUG'])
