@@ -1,4 +1,4 @@
-# CD project
+# Retrievr
 ### What is this project?
 Welcome to the Retrievr; produced and created by Retriever Labs!
 
