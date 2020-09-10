@@ -68,6 +68,7 @@ CREATE TABLE public.song (
 	"name" varchar NOT NULL,
 	artist uuid NOT NULL,
 	album uuid NULL,
+	"data" bytea NOT NULL
 	length integer NOT NULL,
 	release_date date NULL,
 	favorites integer NOT NULL DEFAULT 0,
