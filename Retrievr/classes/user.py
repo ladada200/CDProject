@@ -16,7 +16,7 @@ class UserObj(object):
     def __init__(self,
                  login=None,
                  password=None,
-                 email=None)
+                 email=None):
         """Initiates the User Object"""
         
         args = [login, password, email]
@@ -36,7 +36,7 @@ class UserObj(object):
             return dict(
                 login=self._login,
                 password=self._password,
-                email=self._email
+                email=self._email,
                 accepted_invite=app.config.get('PERSONAL','ACCEPT_INVITE')
             )
 
