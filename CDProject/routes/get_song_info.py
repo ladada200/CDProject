@@ -11,6 +11,11 @@ from base64 import b64encode
 def index(song=None):
     """Does something"""
 
+    artist_id = uuid4()
+    album_id = uuid4()
+    song_id = uuid4()
+    playlist_id = uuid4()
+
     if request.method == "GET":
         if song:
             return make_response(
@@ -27,66 +32,76 @@ def index(song=None):
                     user=dict(
                         curr_song=dict(
                             song_id=1,
-                            song_uuid="%s" % uuid4(),
-                            song_pos="%s" % timedelta(20)
+                            song_uuid="%s" % song_id,
+                            song_pos="%s" % timedelta(seconds=20)
                         )
                     ),
                     user_library=dict(
-                        playlists=[],   # has songs
-                        artists=[],     # has albums
-                        albums=[],      # has songs
-                        songs=[],       # all songs in library
+                        playlists=[playlist_id],   # has songs
+                        artists=[artist_id],     # has albums
+                        albums=[album_id],      # has songs
+                        songs=[song_id],       # all songs in library
                     ),
-                    song=dict(
-                        id=1,
-                        uuid="%s" % uuid4(),
-                        song_name="One week",
-                        song_length="%s" % timedelta(seconds=174),
-                        song_artist="Bare Naked Ladies",
-                        song_album="One Week",
-                        song_score=3.5,
-                        song_fav=True,
-                        created_uid=1,
-                        created_date=datetime.strptime("2020-01-01", "%Y-%m-%d"),
-                        write_uid=1,
-                        write_date=datetime.strptime("2020-01-01", "%Y-%m-%d")
-                    ),
-                    artist=dict(
-                        id=1,
-                        uuid="%s" % uuid4(),
-                        artist_name="Bare Naked Ladies",
-                        artist_albums=[
-                            dict(
-                                album_id=1,
-                                album_uuid="%s" % uuid4()
-                            )
-                        ],
-                        album_count=1,  # computed
-                        created_uid=1,
-                        created_date=datetime.strptime("2020-01-01", "%Y-%m-%d"),
-                        write_uid=1,
-                        write_date=datetime.strptime("2020-01-01", "%Y-%m-%d")
-                    ),
-                    album=dict(
-                        id=1,
-                        uuid="%s" % uuid4(),
-                        album_length="%s" % timedelta(seconds=3077),
-                        album_artist="Bare Naked Ladies",
-                        album_name="Stunt",
-                        album_release=datetime.strptime("1999-04-20", "%Y-%m-%d"),
-                        created_uid=1,
-                        created_date=datetime.strptime("2020-01-01", "%Y-%m-%d"),
-                        write_uid=1,
-                        write_date=datetime.strptime("2020-01-01", "%Y-%m-%d")
-                    ),
+                    songs=[
+                        dict(
+                            id=1,
+                            uuid="%s" % song_id,
+                            song_name="One week",
+                            song_length="%s" % timedelta(seconds=174),
+                            # song_artist="Bare Naked Ladies",    # many2one
+                            # song_album="One Week",              # many2one
+                            song_artists=[artist_id],             # many2many
+                            song_album_uuid=album_id,
+                            song_score=3.5,
+                            song_fav=True,
+                            created_uid=1,
+                            created_date=datetime.strptime("2020-01-01", "%Y-%m-%d"),
+                            write_uid=1,
+                            write_date=datetime.strptime("2020-01-01", "%Y-%m-%d")
+                        )   
+                    ],
+                    artists=[
+                        dict(
+                            id=1,
+                            uuid="%s" % artist_id,
+                            artist_name="Bare Naked Ladies", # many2one
+                            artist_albums=[
+                                dict(
+                                    album_id=1,
+                                    album_uuid="%s" % album_id
+                                )
+                            ],
+                            album_count=1,  # computed
+                            created_uid=1,
+                            created_date=datetime.strptime("2020-01-01", "%Y-%m-%d"),
+                            write_uid=1,
+                            write_date=datetime.strptime("2020-01-01", "%Y-%m-%d")
+                        )
+                    ],
+                    albums=[
+                        dict(
+                            id=1,
+                            uuid="%s" % album_id,
+                            album_length="%s" % timedelta(seconds=3077),
+                            # album_artist="Bare Naked Ladies",   # many2many
+                            album_artists=[artist_id],             # many2many
+                            album_name="Stunt",
+                            album_release=datetime.strptime("1999-04-20", "%Y-%m-%d"),
+                            created_uid=1,
+                            created_date=datetime.strptime("2020-01-01", "%Y-%m-%d"),
+                            write_uid=1,
+                            write_date=datetime.strptime("2020-01-01", "%Y-%m-%d")
+                        )
+                    ],
                     playlist=dict(
                         id=1,
-                        uuid="%s" % uuid4(),
+                        uuid="%s" % playlist_id,
                         playlist_name="One week - playlist",
                         songs=[
                             dict(
                                 id=1,
-                                song_name="One week"
+                                song_id=song_id,
+                                song_pos="%s" % timedelta(seconds=20)
                             )
                         ],
                         created_uid=1,

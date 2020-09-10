@@ -5,10 +5,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 CDProject = Flask(__name__)
+CDProject.config.from_object('CDProject.config.Config')
+CDProject.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+db = SQLAlchemy(CDProject)
 
 from . import classes
 from . import models
 from . import routes
 
-CDProject.config.from_object('CDProject.config.Config')
-CDProject.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
