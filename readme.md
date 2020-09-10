@@ -1,6 +1,9 @@
-# CD project
+# Retrievr
 ### What is this project?
-Welcome to the CD Library Project; produced and created by Christopher Rupert.
+Welcome to the Retrievr; produced and created by Retrievr Labs.
+
+### Who is Retrievr Labs?
+1. Christopher Rupert
 
 ### Version:
 1.0.0.20.9.4.a
