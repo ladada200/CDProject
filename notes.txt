@@ -1,0 +1,31 @@
+#
+# WIP
+#
+# DBADMIN = dbadmin
+# DBUSER = retrievr
+# 
+1. createuser --interactive
+2. dbadmin
+3. y
+
+1. createuser --interactive
+2. retrievr
+3. n
+4. n
+5. n
+
+1. createdb retrievr
+
+1. sudo adduser retrievr
+2. retrievr1234
+3. retrievr1234
+4. RetrievR
+5,6,7,8,9. 
+10.
+
+1. sudo adduser dbadmin
+2. dbadmin
+3. dbadmin
+4. dbadmin
+5,6,7,8,9. 
+10.

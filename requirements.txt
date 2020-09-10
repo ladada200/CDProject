@@ -1,7 +1,8 @@
 # base requirements doc.
-# used for CD Library Project
+# used for Retrievr
 # Created by: Christopher Rupert
 psycopg2==2.8.*
 urllib3==1.25.*
 sqlalchemy=1.3.19
-flask
+Flask-SQLAlchemy===2.4.1
+Flask
