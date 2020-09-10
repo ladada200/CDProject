@@ -1,5 +1,5 @@
 # base requirements doc.
-# used for CD Library Project
+# used for Retrievr
 # Created by: Christopher Rupert
 psycopg2==2.8.*
 urllib3==1.25.*

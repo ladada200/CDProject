@@ -1,8 +1,11 @@
 # CD project
 ### What is this project?
-Welcome to the CD Library Project; produced and created by Christopher Rupert.
+Welcome to the Retrievr; produced and created by Retriever Labs!
 
 Checkout the wiki here! [https://github.com/ladada200/Retrievr/wiki](https://github.com/ladada200/Retrievr/wiki)
+
+### Who is Retrievr Labs?
+1. Christopher Rupert.
 
 ### Version:
 1.0.0.20.9.4.a
