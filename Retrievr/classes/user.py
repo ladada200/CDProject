@@ -78,7 +78,11 @@ class User(db.Model):
         self.active = active
         self.accepted_invite = accepted_invite
         self.email = email
-        
+
+
+    def __repr__(self):
+        return '<User {}>'.format(self.login)
+
 
     @classmethod
     def create(cls, vals, **kw):
@@ -86,4 +90,21 @@ class User(db.Model):
         obj = cls(vals)
         obj.session.add(obj)
         obj.session.commit()
-    
+
+
+class LoginMethod():
+    """Used for logging in"""
+
+    def __init__(self,
+                 login=None,
+                 password=None,
+                 **kwargs):
+        """Initializes the class"""
+
+        Retrievr.logger.debug("Received ingest: %s : %s" % (login, password))
+
+        user = User.query.filter(User.login == login and User.password == password).first()
+
+        Retrievr.logger.debug("Output from find: %s" % user if user else "None")
+
+        return None
