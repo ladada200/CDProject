@@ -11,6 +11,9 @@ app.config.from_object('Retrievr.config.Config')
 LOG_PATH = os.path.join(os.getcwd(), "%s" % app.config.get('LOG_PATH'))
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+
+werk_log = logging.getLogger('werkzeug')
+
 handler = TimedRotatingFileHandler('%s/Retrievr-%s.log' % (LOG_PATH,
                                                         datetime.now().strftime("%Y-%m-%d")),
                                 when='midnight',
@@ -19,6 +22,8 @@ handler.setLevel(logging.DEBUG if app.config.get('DEBUG') else logging.INFO)
 handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
 app.logger.setLevel(logging.DEBUG if app.config.get('DEBUG') else logging.INFO)
 app.logger.addHandler(handler)
+
+werk_log.addHandler(handler)
 
 from . import user
 from . import artist
