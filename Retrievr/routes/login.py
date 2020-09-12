@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, Blueprint, render_template, abort, url_for, redirect, request
-from flask import current_app as Retrievr
 from jinja2 import TemplateNotFound
 
-from ..classes import user
+from . import app
+from Retrievr import classes
 
 login_form = Blueprint('login_form', __name__, template_folder="templates")
 
@@ -20,10 +20,9 @@ def show_login_form(page):
 
             # let's start down that path.
             data = request.form.to_dict()
-            user.LoginMethod(login=data.get('login'), password=data.get('password'))
+            classes.user.LoginMethod(login=data.get('login'), password=data.get('password'))
             
             return render_template('auth/%s.html' % page)
     except TemplateNotFound:
         return redirect(url_for('login_form.show_login_form'))
 
-Retrievr.register_blueprint(login_form)

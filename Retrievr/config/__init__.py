@@ -24,12 +24,18 @@ class Config(object):
     HOST_FS=config.get('HOST', 'HOST_FS')
     HOST_RDP_PORT=config.get('HOST', 'HOST_RDP_PORT')
 
+    # Encryption
+    FERNET_KEY=config.get('ENCRYPTION', 'FERNET_KEY')
+
+    # Logging
+    LOG_PATH=config.get('LOGGING', 'LOG_PATH')
+
     # DB
-    SQLALCHEMY_DATABASE_URI="postgresql:///%s:%s@%s:%s/%s" % (config.get('DB', 'db_username'),
-                                                              config.get('DB', 'db_password'),
-                                                              config.get('DB', 'db_host'),
-                                                              config.get('DB', 'db_port'),
-                                                              config.get('DB', 'db_name'))
+    SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://%s:%s@%s:%s/%s" % (config.get('DB', 'db_username'),
+                                                                      config.get('DB', 'db_password'),
+                                                                      config.get('DB', 'db_host'),
+                                                                      config.get('DB', 'db_port'),
+                                                                      config.get('DB', 'db_name'))
 
     # Song info
     SONG_STORE=config.get('SONG_FORMAT', 'song_store')

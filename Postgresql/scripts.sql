@@ -6,11 +6,11 @@ CREATE TABLE public."user" (
 	login varchar NOT NULL,
     email varchar NOT NULL,
 	"password" varchar NOT NULL,
-	lastactive date NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	create_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	lastactive timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	create_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	active boolean NULL DEFAULT False,
 	accepted_invite bool NULL DEFAULT False,
-	write_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	write_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT user_uuid_pk PRIMARY KEY (uuid)
 );
 CREATE INDEX user_id_idx ON public."user" (id);
@@ -28,9 +28,9 @@ CREATE TABLE public.artist (
 	name varchar NOT NULL,
 	create_uid uuid NOT NULL,
     active boolean NULL DEFAULT True,
-	create_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	create_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	write_uid uuid NOT NULL,
-	write_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	write_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT artist_pk PRIMARY KEY (uuid),
 	CONSTRAINT artist_create_uid_fk FOREIGN KEY (create_uid) REFERENCES public."user"(uuid),
 	CONSTRAINT artist_write_uid_fk FOREIGN KEY (write_uid) REFERENCES public."user"(uuid)
@@ -49,9 +49,9 @@ CREATE TABLE public.album (
 	active bool NULL DEFAULT true,
 	album_artist uuid NOT NULL,
 	create_uid uuid NOT NULL,
-	create_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	create_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	write_uid uuid NOT NULL,
-	write_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	write_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"name" varchar NOT NULL,
     CONSTRAINT album_pk PRIMARY KEY (uuid),
 	CONSTRAINT album_artist_fk FOREIGN KEY (album_artist) REFERENCES public.artist(uuid),
@@ -72,9 +72,9 @@ CREATE TABLE public.song (
 	length integer NOT NULL,
 	release_date date NULL,
 	favorites integer NOT NULL DEFAULT 0,
-	create_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	create_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	create_uid uuid NOT NULL,
-	write_date date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	write_date timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	write_uid uuid NOT NULL,
 	CONSTRAINT song_pk PRIMARY KEY (uuid),
 	CONSTRAINT song_create_uid_fk FOREIGN KEY (create_uid) REFERENCES public."user"(uuid),
@@ -90,3 +90,16 @@ COMMENT ON TABLE public.song IS 'currently this is a list of all songs for the d
 -- Column comments
 
 COMMENT ON COLUMN public.song.album IS 'songs can be created without an album';
+
+GRANT SELECT ON TABLE public.album TO retrievr;
+GRANT UPDATE ON TABLE public.album TO retrievr;
+GRANT INSERT ON TABLE public.album TO retrievr;
+GRANT SELECT ON TABLE public.artist TO retrievr;
+GRANT INSERT ON TABLE public.artist TO retrievr;
+GRANT UPDATE ON TABLE public.artist TO retrievr;
+GRANT SELECT ON TABLE public.song TO retrievr;
+GRANT INSERT ON TABLE public.song TO retrievr;
+GRANT UPDATE ON TABLE public.song TO retrievr;
+GRANT SELECT ON TABLE public."user" TO retrievr;
+GRANT INSERT ON TABLE public."user" TO retrievr;
+GRANT UPDATE ON TABLE public."user" TO retrievr;

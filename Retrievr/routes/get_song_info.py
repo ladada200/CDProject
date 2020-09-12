@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, Blueprint, request, session, make_response
-from Retrievr import Retrievr
+from flask import Flask, Blueprint, request, session, make_response, app
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 from base64 import b64encode
 
-@Retrievr.route('/song/', methods=['GET'])
-@Retrievr.route('/song/<song>', methods=['GET', 'POST'])
+song = Blueprint('song', __name__)
+
+@song.route('/song/', methods=['GET'])
+@song.route('/song/<song>', methods=['GET', 'POST'])
 def index(song=None):
     """Does something"""
 

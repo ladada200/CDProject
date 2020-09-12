@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from Retrievr import db
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from datetime import datetime
+from .basemodel import BaseMixin, Encryption
+from hashlib import sha256
+from . import app
+import Retrievr
+
+db = SQLAlchemy()
 
 class UserObj(object):
     """User Object"""
@@ -44,7 +50,8 @@ class UserObj(object):
             return "%s" % e
 
 
-class User(db.Model):
+# db.Model
+class User(BaseMixin, db.Model):
     """Users table"""
 
     __tablename__ = "user"
@@ -57,11 +64,11 @@ class User(db.Model):
 
     login = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)     # this string will be encrypted elsewhere
-    lastactive = db.Column(db.Date, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
+    lastactive = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
     active = db.Column(db.Boolean, default=False)
     accepted_invite = db.Column(db.Boolean, default=False)
-    create_date = db.Column(db.Date, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
-    write_date = db.Column(db.Date, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
+    create_date = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
+    write_date = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
     email = db.Column(db.String, nullable=False, unique=True)
 
     def __init__(self,
@@ -79,20 +86,10 @@ class User(db.Model):
         self.accepted_invite = accepted_invite
         self.email = email
 
-
     def __repr__(self):
         return '<User {}>'.format(self.login)
 
-
-    @classmethod
-    def create(cls, vals, **kw):
-        """Create user method"""
-        obj = cls(vals)
-        obj.session.add(obj)
-        obj.session.commit()
-
-
-class LoginMethod():
+class LoginMethod(BaseMixin, Encryption):
     """Used for logging in"""
 
     def __init__(self,
@@ -101,10 +98,11 @@ class LoginMethod():
                  **kwargs):
         """Initializes the class"""
 
-        Retrievr.logger.debug("Received ingest: %s : %s" % (login, password))
+        user = User.query.filter_by(login=login,
+                                    active=True).first()
 
-        user = User.query.filter(User.login == login and User.password == password).first()
-
-        Retrievr.logger.debug("Output from find: %s" % user if user else "None")
+        if user:
+            if self.decrypt(user.password) == password:
+                user.write(vals=dict(lastactive=datetime.now()), uuid=user.uuid)
 
         return None

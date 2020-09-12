@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from Retrievr import db
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
+
+db = SQLAlchemy()
 
 class Song(db.Model):
     """Song table"""
