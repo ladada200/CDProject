@@ -29,11 +29,14 @@ app.register_blueprint(get_song_info.song)
 LOG_PATH = os.path.join(os.getcwd(), "%s" % app.config.get('LOG_PATH'))
 
 def main():
+    logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     handler = TimedRotatingFileHandler('%s/Retrievr-%s.log' % (LOG_PATH,
                                                                datetime.now().strftime("%Y-%m-%d")),
                                        when='midnight',
                                        backupCount=30)
     handler.setLevel(logging.DEBUG if app.config.get('DEBUG') else logging.INFO)
+    handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+    app.logger.setLevel(logging.DEBUG if app.config.get('DEBUG') else logging.INFO)
     app.logger.addHandler(handler)
     app.run(host=app.config['HOST_NAME'],
             port=app.config['HOST_PORT'],

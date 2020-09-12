@@ -21,6 +21,8 @@ def show_login_form(page):
             # let's start down that path.
             data = request.form.to_dict()
             classes.user.LoginMethod(login=data.get('login'), password=data.get('password'))
+
+            app.logger.debug("Got files")
             
             return render_template('auth/%s.html' % page)
     except TemplateNotFound:
