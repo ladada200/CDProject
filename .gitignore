@@ -50,6 +50,12 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+*.log
+*__pycache__
+
+# Workspace
+*.code-workspace
+*.vscode
 
 # Configuration
 local.cfg

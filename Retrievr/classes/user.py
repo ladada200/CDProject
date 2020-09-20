@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from Retrievr import db
+from flask import session, request
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from datetime import datetime
+from .basemodel import BaseMixin, Encryption
+from hashlib import sha256
+from dateutil.relativedelta import relativedelta
+from . import app
+import Retrievr
+
+db = SQLAlchemy()
 
 class UserObj(object):
     """User Object"""
@@ -41,13 +49,17 @@ class UserObj(object):
             )
 
         except Exception as e:
+            app.logger.warn("%s, stopping" % e)
             return "%s" % e
 
 
-class User(db.Model):
+# db.Model
+class User(BaseMixin, db.Model):
     """Users table"""
 
-    __tablename__ = "user"
+    __tablename__ = "auth_users"
+    __table_args__ = {'schema': "private" }
+    _log_access = False
 
     uuid = db.Column(UUID(as_uuid=True), 
                      primary_key=True,
@@ -57,11 +69,9 @@ class User(db.Model):
 
     login = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)     # this string will be encrypted elsewhere
-    lastactive = db.Column(db.Date, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
+    lastactive = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
     active = db.Column(db.Boolean, default=False)
     accepted_invite = db.Column(db.Boolean, default=False)
-    create_date = db.Column(db.Date, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
-    write_date = db.Column(db.Date, nullable=False, server_default=db.text("CURRENT_TIMESTAMP"))
     email = db.Column(db.String, nullable=False, unique=True)
 
     def __init__(self,
@@ -78,12 +88,29 @@ class User(db.Model):
         self.active = active
         self.accepted_invite = accepted_invite
         self.email = email
-        
 
-    @classmethod
-    def create(cls, vals, **kw):
-        """Create user method"""
-        obj = cls(vals)
-        obj.session.add(obj)
-        obj.session.commit()
-    
+    def __repr__(self):
+        return '<User {}>'.format(self.login)
+
+class LoginMethod(BaseMixin, Encryption):
+    """Used for logging in"""
+
+    def __init__(self,
+                 login=None,
+                 password=None,
+                 **kwargs):
+        """Initializes the class"""
+
+        user = User.query.filter_by(login=login,
+                                    active=True).first()
+
+        if user:
+            if self.decrypt(user.password) == password:
+                session['context'] = dict(
+                    uid="%s" % user.uuid,
+                    online=True
+                )
+                session['expires'] = (datetime.now() + relativedelta()).strftime("%c")
+                user.write(vals=dict(lastactive=datetime.now()), uuid=user.uuid)
+
+        return None

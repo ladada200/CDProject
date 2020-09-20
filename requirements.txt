@@ -6,3 +6,5 @@ urllib3==1.25.*
 sqlalchemy=1.3.19
 Flask-SQLAlchemy===2.4.1
 Flask
+python-dateutil
+Flask_Bootstrap
