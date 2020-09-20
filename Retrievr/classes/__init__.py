@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask
+from flask import Flask, session
 from logging.handlers import TimedRotatingFileHandler
 import os
 from datetime import datetime

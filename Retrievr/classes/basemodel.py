@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from flask import session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
@@ -27,26 +28,35 @@ class Encryption(object):
 
 class BaseMixin(object):
 
+    _cr = property(lambda self: self.env.cr)
+
     _table = None
     _log_access = True
 
     def __init__(self):
-        self._table = self.__tablename__.replace('.', '_')
-        return super(BaseMixin, self)
-
+        return None
 
     @classmethod
     def create(self, vals):
-        try:
-            if self._log_access:
-                vals['create_date'] = datetime.now()
-                vals['write_date'] = datetime.now()
-    
+        try:   
+            if not self:
+                return True
+
+            self._table = ".".join([self.__table_args__.get('schema'), self.__tablename__])
+
+            __dict__ = self.__dict__
+
+            if session and self._log_access:
+                vals['create_uid'] = session.get('context').get('uid')
+                vals['write_uid'] = session.get('context').get('uid')
+
             obj = self(vals)
             db.session.add(obj)
             db.session.commit()
-            app.logger.debug("%s [CREATE]: %s" % (self.__tablename__, vals))
+            app.logger.debug("%s [CREATE]: %s" % (self._table, vals))
+            return super(BaseMixin, self).create(vals)
         except Exception as e:
+            app.logger.error("%s" % e)
             db.session.rollback()
 
     @classmethod
@@ -55,17 +65,21 @@ class BaseMixin(object):
             if not self:
                 return True
 
-            if self._log_access:
-                if 'write_date' not in vals.keys():
-                    vals['write_date'] = datetime.now()
+            self._table = ".".join([self.__table_args__.get('schema'), self.__tablename__])
 
-            query = 'UPDATE "%s" SET %s WHERE uuid = \'%s\';' % (
-                self.__tablename__, ','.join('\"%s\"=\'%s\'' % (e, vals[e]) for e in vals.keys()), uuid
+            __dict__ = self.__dict__
+
+            if session and self._log_access:
+                vals['write_uid'] = session.get('context').get('uid')
+
+            query = 'UPDATE %s SET %s WHERE uuid=\'%s\';' % (
+                self._table, ','.join('\"%s\"=\'%s\'' % (e, vals[e]) for e in vals.keys()), uuid
             )
 
             db.engine.execute(query)
             db.session.commit()
-            app.logger.debug("%s [WRITE]: %s" % (self.__tablename__, vals))
+            app.logger.debug("%s WRITE: %s" % (self._table, vals))
             return True
         except Exception as e:
+            app.logger.error("%s" % e)
             db.session.rollback()

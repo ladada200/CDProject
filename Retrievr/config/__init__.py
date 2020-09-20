@@ -37,6 +37,9 @@ class Config(object):
                                                                       config.get('DB', 'db_port'),
                                                                       config.get('DB', 'db_name'))
 
+    # secret_key
+    SECRET_KEY=config.get('ENCRYPTION', 'FERNET_KEY')
+
     # Song info
     SONG_STORE=config.get('SONG_FORMAT', 'song_store')
     SONG_DISPLAY_FORMAT=config.get('SONG_FORMAT', 'song_display_format')

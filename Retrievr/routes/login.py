@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, Blueprint, render_template, abort, url_for, redirect, request
+from flask import Flask, Blueprint, render_template, abort, url_for, redirect, request, session, make_response
 from jinja2 import TemplateNotFound
 
 from . import app
@@ -20,11 +20,14 @@ def show_login_form(page):
 
             # let's start down that path.
             data = request.form.to_dict()
-            classes.user.LoginMethod(login=data.get('login'), password=data.get('password'))
+            user = classes.user.LoginMethod(login=data.get('login'), password=data.get('password'))
 
-            app.logger.debug("Got files")
-            
-            return render_template('auth/%s.html' % page)
+            response = make_response(render_template('auth/%s.html' % page))
+            app.logger.debug("SESSION: %s" % session)
+            # response.set_cookie('retrievr', b'test')
+            # app.logger.debug("REQ %s" % request.cookies.get('retrievr'))
+
+            return response
     except TemplateNotFound:
         return redirect(url_for('login_form.show_login_form'))
 
