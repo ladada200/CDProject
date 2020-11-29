@@ -23,3 +23,4 @@ app.logger.addHandler(handler)
 
 from . import login
 from . import get_song_info
+from . import main

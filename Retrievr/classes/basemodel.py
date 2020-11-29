@@ -78,8 +78,35 @@ class BaseMixin(object):
 
             db.engine.execute(query)
             db.session.commit()
-            app.logger.debug("%s WRITE: %s" % (self._table, vals))
+            app.logger.debug("%s [WRITE]: %s" % (self._table, vals))
             return True
+        except Exception as e:
+            app.logger.error("%s" % e)
+            db.session.rollback()
+
+    @classmethod
+    def unlink(self):
+        """Default unlink method"""
+        try:
+            if not self:
+                return True
+
+            self._table = ".".join([self.__table_args__.get('schema'), self.__tablename__])
+
+            __dict__ = self.__dict__
+
+            if session and self._log_access:
+                vals['write_uid'] = session.get('context').get('uid')
+
+            query = """DELETE FROM {schema}.{tablename} WHERE {input}"""
+
+            query.format(schema=self.__table_args__.get('schema'),
+                         tablename=self.__tablename__,
+                         input="id=%s" % self.id)
+
+            db.engine.execute(query)
+            db.session.commit()
+            app.logger.debug("%s [UNLINK]: %s" % (self._table, ))
         except Exception as e:
             app.logger.error("%s" % e)
             db.session.rollback()

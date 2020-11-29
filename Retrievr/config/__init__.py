@@ -40,6 +40,8 @@ class Config(object):
     # secret_key
     SECRET_KEY=config.get('ENCRYPTION', 'FERNET_KEY')
 
+    SQLALCHEMY_ECHO=True
+
     # Song info
     SONG_STORE=config.get('SONG_FORMAT', 'song_store')
     SONG_DISPLAY_FORMAT=config.get('SONG_FORMAT', 'song_display_format')

@@ -5,11 +5,51 @@ from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 from base64 import b64encode
 
+from . import app
+
+from Retrievr.classes.song import Song
+from Retrievr.classes.artist import Artist
+from Retrievr.classes.album import Album
+
 song = Blueprint('song', __name__)
 
-@song.route('/song/', methods=['GET'])
-@song.route('/song/<song>', methods=['GET', 'POST'])
-def index(song=None):
+def validate_uuid4(uuid_string):
+
+    """
+    Validate that a UUID string is in
+    fact a valid uuid4.
+    Happily, the uuid module does the actual
+    checking for us.
+    It is vital that the 'version' kwarg be passed
+    to the UUID() call, otherwise any 32-character
+    hex string is considered valid.
+    """
+
+    try:
+        val = UUID(uuid_string, version=4)
+    except ValueError:
+        # If it's a value error, then the string 
+        # is not a valid hex code for a UUID.
+        return False
+
+    # If the uuid_string is a valid hex code, 
+    # but an invalid uuid4,
+    # the UUID.__init__ will convert it to a 
+    # valid uuid4. This is bad for validation purposes.
+
+    return True
+
+@song.route('/', methods=['GET'])
+@song.route('/uuid/<song_uuid>', methods=['GET'])
+@song.route('/name/<song_name>', methods=['GET'])
+@song.route('/artist/<song_artist>', methods=['GET'])
+@song.route('/album/<song_album>', methods=['GET'])
+@song.route('/test/<test>', methods=['GET'])
+def index(song_uuid=None, 
+          song_name=None,
+          song_artist=None,
+          song_album=None,
+          test=False):
     """Does something"""
 
     artist_id = uuid4()
@@ -18,16 +58,163 @@ def index(song=None):
     playlist_id = uuid4()
 
     if request.method == "GET":
-        if song:
-            return make_response(
-                dict(
-                    hello="World"
-                ),
-                200,
-                {"Content-Type": "application/json"}
-            )
+        if song_uuid:
+            if validate_uuid4(song_uuid):
+                # check for song
+                s_exec = Song.query.filter(Song.uuid == '%s' % song_uuid).one_or_none()
+                # s_exec.dictfetchall()
+                if s_exec:
+                    return make_response(
+                        dict(
+                            response_time=datetime.now(),
+                            response=[dict(
+                                name=s_exec.name,
+                                artist=s_exec.artist_name.name,
+                                album=s_exec.album_name.name,
+                                release_date=s_exec.release_date,
+                                length=s_exec.length
+                            )]
+                        ),
+                        200,
+                        {"Content-Type": "application/json"}
+                    )
+                else:
+                    return make_response(
+                        dict(
+                            error=dict(
+                                code=404,
+                                message="""No song found."""
+                            ),
+                        ), 
+                        404, 
+                        {"Content-Type": "application/json"}
+                    )
 
-        if not song:
+            else:
+                return make_response(
+                    dict(
+                        error=dict(
+                            code=404,
+                            message="""No song found."""
+                        ),
+                    ), 
+                    404, 
+                    {"Content-Type": "application/json"}
+                )
+
+        if song_name:
+            s_exec = Song.query.filter(Song.name.ilike(f'%{song_name}%')).all()
+
+            if s_exec:
+                x = []
+                for i in s_exec:
+                    x.append(
+                        dict(
+                            name=i.name,
+                            artist=i.artist_name.name,
+                            album=i.album_name.name,
+                            release_date=i.release_date,
+                            length=i.length
+                        )
+                    )
+
+                return make_response(
+                    dict(
+                        response_time=datetime.now(),
+                        response=x
+                    ),
+                    200,
+                    {"Content-Type": "application/json"}
+                )
+            else:
+                return make_response(
+                    dict(
+                        error=dict(
+                            code=404,
+                            message="""No song found."""
+                        ),
+                    ), 
+                    404, 
+                    {"Content-Type": "application/json"}
+                )
+
+        if song_artist:
+            s_exec = Song.query.join(Song.artist_name)\
+                .filter(Artist.name.ilike(f'%{song_artist}%'), 
+                        Artist.active == True).all()
+
+            if s_exec:
+                x = []
+                for i in s_exec:
+                    x.append(
+                        dict(
+                            name=i.name,
+                            artist=i.artist_name.name,
+                            album=i.album_name.name,
+                            release_date=i.release_date,
+                            length=i.length
+                        )
+                    )
+
+                return make_response(
+                    dict(
+                        response_time=datetime.now(),
+                        response=x
+                    ),
+                    200,
+                    {"Content-Type": "application/json"}
+                )
+            else:
+                return make_response(
+                    dict(
+                        error=dict(
+                            code=404,
+                            message="""No song found."""
+                        ),
+                    ), 
+                    404, 
+                    {"Content-Type": "application/json"}
+                )
+
+        if song_album:
+            s_exec = Song.query.join(Song.album_name)\
+                .filter(Album.name.ilike(f'%{song_album}%'), 
+                        Album.active == True).all()
+
+            if s_exec:
+                x = []
+                for i in s_exec:
+                    x.append(
+                        dict(
+                            name=i.name,
+                            artist=i.artist_name.name,
+                            album=i.album_name.name,
+                            release_date=i.release_date,
+                            length=i.length
+                        )
+                    )
+
+                return make_response(
+                    dict(
+                        response_time=datetime.now(),
+                        response=x
+                    ),
+                    200,
+                    {"Content-Type": "application/json"}
+                )
+            else:
+                return make_response(
+                    dict(
+                        error=dict(
+                            code=404,
+                            message="""No song found."""
+                        ),
+                    ), 
+                    404, 
+                    {"Content-Type": "application/json"}
+                )
+
+        if test:
             return make_response(
                 dict(
                     user=dict(

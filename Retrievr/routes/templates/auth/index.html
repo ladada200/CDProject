@@ -1,4 +1,4 @@
-{%- extends "base.html" %}
+{%- extends "/base.html" %}
 
 {% block title %}Retrivr - Login{% endblock %}
 
@@ -10,7 +10,7 @@
 {% block content %}
     <div class="container">
         <div class="jumbotron login_jumbo">
-            <h1>Signup to interact with Retrievr</h1>
+            <h1>Sign in to interact with Retrievr</h1>
             <p>Note: Your data isn't going anywhere.</p>
         </div>
         <div class="col-md-12" style="margin-top: 0px">
@@ -18,12 +18,12 @@
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <form method="post" action="">
+                        <form method="post" action="/web/login/">
                             <label for="login">username / email</label>
-                            <input type="text" class="form-control" name="login" id="login" />
+                            <input type="text" class="form-control" name="login" id="login" autofocus="autofocus"/>
                             <label for="password">password</label>
                             <input type="password" class="form-control" name="password" id="password" />
-                            <button type="object" role="button" class="btn btn-primary">Login</button>
+                            <button type="object" role="button" class="login btn btn-primary">Login</button>
                         </form>
                     </div>
                 </div>

@@ -1,7 +1,13 @@
 .login_jumbo {
     margin-bottom: 0px;
     border-radius: 0px !important;
-    font-family: 'Roboto', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif";
+    font-family: 'Roboto', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: 100;
+    background: -webkit-linear-gradient(45deg, cyan, magenta);
+}
+
+.login_jumbo > p {
+    font-weight: 300;
 }
 
 .login_body {

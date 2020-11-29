@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # from . import db
-from flask import Flask, session
+from flask import Flask, session, render_template, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 
@@ -23,11 +23,19 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 Bootstrap(app)
 
 
-from .routes import login, get_song_info
+from .routes.main import main
+from .routes.get_song_info import song
+from .routes.login import login_form
 
+app.register_blueprint(main)
+app.register_blueprint(login_form, url_prefix='/web')
+app.register_blueprint(song, url_prefix='/song')
 
-app.register_blueprint(login.login_form)
-app.register_blueprint(get_song_info.song)
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    print(app.url_map)
+    return make_response(render_template('/errors/error.html'), 404)
 
 LOG_PATH = os.path.join(os.getcwd(), "%s" % app.config.get('LOG_PATH'))
 
@@ -35,8 +43,7 @@ def main():
     db = SQLAlchemy(app)
     logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     werk_log = logging.getLogger('werkzeug')
-    handler = TimedRotatingFileHandler('%s/Retrievr-%s.log' % (LOG_PATH,
-                                                               datetime.now().strftime("%Y-%m-%d")),
+    handler = TimedRotatingFileHandler('%s/Retrievr.log' % (LOG_PATH),
                                        when='midnight',
                                        backupCount=30)
     handler.setLevel(logging.DEBUG if app.config.get('DEBUG') else logging.INFO)
@@ -61,7 +68,7 @@ def main():
 
     app.run(host=app.config['HOST_NAME'],
             port=app.config['HOST_PORT'],
-            debug=app.config.get('DEBUG', False))
+            debug=app.config.get('DEBUG', False), use_reloader=True)
 
 if __name__ == '__main__':
     main()

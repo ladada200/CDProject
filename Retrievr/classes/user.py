@@ -95,17 +95,26 @@ class User(BaseMixin, db.Model):
 class LoginMethod(BaseMixin, Encryption):
     """Used for logging in"""
 
+    login = None
+    password = None
+
     def __init__(self,
                  login=None,
                  password=None,
                  **kwargs):
         """Initializes the class"""
+        self.login = login
+        self.password = password
+        return None
 
-        user = User.query.filter_by(login=login,
+    def login_method(self):
+        """Used for logging in the user."""
+
+        user = User.query.filter_by(login=self.login,
                                     active=True).first()
 
         if user:
-            if self.decrypt(user.password) == password:
+            if self.decrypt(user.password) == self.password:
                 session['context'] = dict(
                     uid="%s" % user.uuid,
                     online=True
@@ -113,4 +122,19 @@ class LoginMethod(BaseMixin, Encryption):
                 session['expires'] = (datetime.now() + relativedelta()).strftime("%c")
                 user.write(vals=dict(lastactive=datetime.now()), uuid=user.uuid)
 
-        return None
+                return True
+
+        return False
+
+    def logout_method(self):
+        """Used for logging out the user."""
+        if session:
+            print(session)
+            user = User.query.filter_by(uuid=session.get('context', {}).get('uid'),
+                                        active=True).first()
+            if user:
+                session.clear()
+                return True
+
+        return False        
+
